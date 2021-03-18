@@ -86,5 +86,4 @@ class ClusterNodeEndpoint extends DefaultEndpoint {
             }
         }
     }
-
 }

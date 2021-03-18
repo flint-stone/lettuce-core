@@ -15,6 +15,7 @@
  */
 package io.lettuce.core.resource;
 
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -23,6 +24,7 @@ import io.lettuce.core.event.EventPublisherOptions;
 import io.lettuce.core.metrics.CommandLatencyCollector;
 import io.lettuce.core.metrics.CommandLatencyCollectorOptions;
 import io.lettuce.core.metrics.CommandLatencyRecorder;
+import io.lettuce.core.protocol.RedisCommand;
 import io.lettuce.core.tracing.Tracing;
 import io.netty.resolver.AddressResolverGroup;
 import io.netty.util.Timer;
@@ -409,4 +411,8 @@ public interface ClientResources {
      * @since 5.1
      */
     Tracing tracing();
+
+    Queue<RedisCommand<?, ?, ?>> getCommandBuffer();
+
+    void setCommandBuffer(Queue<RedisCommand<?, ?, ?>> buffer);
 }

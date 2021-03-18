@@ -223,6 +223,7 @@ public class DefaultEventLoopGroupProvider implements EventLoopGroupProvider {
             return new NioEventLoopGroup(numberOfThreads, factoryProvider.getThreadFactory("lettuce-nioEventLoop"));
         }
 
+
         if (EpollProvider.isAvailable()) {
 
             EventLoopResources resources = EpollProvider.getResources();

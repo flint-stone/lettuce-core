@@ -77,4 +77,6 @@ public interface StatefulRedisConnection<K, V> extends StatefulConnection<K, V> 
      */
     void removeListener(PushListener listener);
 
+    int bufferSize();
+
 }

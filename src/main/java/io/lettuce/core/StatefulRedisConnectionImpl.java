@@ -149,6 +149,11 @@ public class StatefulRedisConnectionImpl<K, V> extends RedisChannelHandler<K, V>
     }
 
     @Override
+    public int bufferSize() {
+        return pushHandler.bufferSize();
+    }
+
+    @Override
     public boolean isMulti() {
         return multi != null;
     }

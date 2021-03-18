@@ -144,4 +144,9 @@ class MasterSlaveConnectionWrapper<K, V> implements StatefulRedisMasterSlaveConn
         delegate.flushCommands();
     }
 
+    @Override
+    public int bufferSize() {
+        return 0;
+    }
+
 }

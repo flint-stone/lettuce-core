@@ -48,4 +48,6 @@ public interface PushHandler {
      */
     Collection<PushListener> getPushListeners();
 
+    int bufferSize();
+
 }

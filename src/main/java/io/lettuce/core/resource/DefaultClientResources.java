@@ -15,9 +15,12 @@
  */
 package io.lettuce.core.resource;
 
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import io.lettuce.core.protocol.RedisCommand;
 import reactor.core.scheduler.Schedulers;
 import io.lettuce.core.event.DefaultEventBus;
 import io.lettuce.core.event.DefaultEventPublisherOptions;
@@ -157,6 +160,8 @@ public class DefaultClientResources implements ClientResources {
     private final Tracing tracing;
 
     private volatile boolean shutdownCalled = false;
+
+    private Queue<RedisCommand<?, ?, ?>> commandBuffer = null;
 
     protected DefaultClientResources(Builder builder) {
 
@@ -772,6 +777,17 @@ public class DefaultClientResources implements ClientResources {
     @Override
     public Tracing tracing() {
         return tracing;
+    }
+
+    @Override
+    public Queue<RedisCommand<?, ?, ?>> getCommandBuffer() {
+        return commandBuffer;
+    }
+
+    @Override
+    public void setCommandBuffer(Queue<RedisCommand<?, ?, ?>> buffer) {
+        commandBuffer = buffer;
+        String str = commandBuffer.stream().map(x->x.toString()).collect(Collectors.joining(","));
     }
 
     @Override

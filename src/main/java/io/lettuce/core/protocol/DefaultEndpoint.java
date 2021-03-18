@@ -129,6 +129,7 @@ public class DefaultEndpoint implements RedisChannelWriter, Endpoint, PushHandle
         this.commandBuffer = LettuceFactories.newConcurrentQueue(clientOptions.getRequestQueueSize());
         this.boundedQueues = clientOptions.getRequestQueueSize() != Integer.MAX_VALUE;
         this.rejectCommandsWhileDisconnected = isRejectCommand(clientOptions);
+        clientResources.setCommandBuffer(this.commandBuffer);
     }
 
     @Override
@@ -159,6 +160,11 @@ public class DefaultEndpoint implements RedisChannelWriter, Endpoint, PushHandle
     @Override
     public List<PushListener> getPushListeners() {
         return pushListeners;
+    }
+
+    @Override
+    public int bufferSize() {
+        return commandBuffer.size();
     }
 
     @Override
@@ -193,7 +199,7 @@ public class DefaultEndpoint implements RedisChannelWriter, Endpoint, PushHandle
         } finally {
             sharedLock.decrementWriters();
             if (debugEnabled) {
-                logger.debug("{} write() done", logPrefix());
+                logger.debug("{} write() done thread {}", logPrefix(), Thread.currentThread().getName());
             }
         }
 
@@ -398,7 +404,7 @@ public class DefaultEndpoint implements RedisChannelWriter, Endpoint, PushHandle
     private void channelFlush() {
 
         if (debugEnabled) {
-            logger.debug("{} write() channelFlush", logPrefix());
+            logger.debug("{} write() channelFlush channel {} Thread {}", logPrefix(), channel.id().asLongText(), Thread.currentThread().getName());
         }
 
         channel.flush();
@@ -535,7 +541,7 @@ public class DefaultEndpoint implements RedisChannelWriter, Endpoint, PushHandle
     private void flushCommands(Queue<RedisCommand<?, ?, ?>> queue) {
 
         if (debugEnabled) {
-            logger.debug("{} flushCommands()", logPrefix());
+            logger.debug("{} flushCommands() thread {}", logPrefix(), Thread.currentThread().getName());
         }
 
         if (isConnected()) {
@@ -550,7 +556,7 @@ public class DefaultEndpoint implements RedisChannelWriter, Endpoint, PushHandle
             });
 
             if (debugEnabled) {
-                logger.debug("{} flushCommands() Flushing {} commands", logPrefix(), commands.size());
+                logger.debug("{} flushCommands() Flushing {} commands thread {}", logPrefix(), commands.size(), Thread.currentThread().getName());
             }
 
             if (!commands.isEmpty()) {

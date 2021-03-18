@@ -43,4 +43,9 @@ enum NoOpPushHandler implements PushHandler {
         return Collections.emptyList();
     }
 
+    @Override
+    public int bufferSize() {
+        return 0;
+    }
+
 }
